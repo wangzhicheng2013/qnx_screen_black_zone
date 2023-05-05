@@ -171,6 +171,4 @@ private:
     void uninit_win() {
         screen_destroy_window(win);
     }
-
-
 };
