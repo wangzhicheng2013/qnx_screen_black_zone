@@ -6,7 +6,9 @@
 #include <errno.h>
 #include <assert.h>
 #include <screen/screen.h>
-struct qnx_screen_black_zone {
+static const int BLACK_COLOR = 0xff000000;
+static const int BLUE_COLOR = 0x0000ffff;
+struct qnx_screen_color_zone {
     screen_context_t screen_ctx = nullptr;
     screen_display_t *screen_disps = nullptr;
     screen_display_t screen_disp = nullptr;
@@ -16,10 +18,11 @@ struct qnx_screen_black_zone {
     int screen_width = 1920;
     int screen_height = 1080;
     int display_zorder = 999;
+    int color =  BLACK_COLOR;        // black
     screen_window_t win = { 0 };
 
-    qnx_screen_black_zone() = default;
-    virtual ~qnx_screen_black_zone() {
+    qnx_screen_color_zone() = default;
+    virtual ~qnx_screen_color_zone() {
         uninit_win();
         unit_context();
     }
@@ -31,7 +34,10 @@ struct qnx_screen_black_zone {
         error = init_win();
         return error;
     }
-    int black(int left,            // left margin
+    inline void set_blue() {
+        color = BLUE_COLOR;
+    }
+    int set_bg_color(int left,            // left margin
               int top,             // top margin
               int right,           // right margin
               int bottom) {        // bottom margin
@@ -66,8 +72,7 @@ struct qnx_screen_black_zone {
             printf("screen_get_window_property_pv for SCREEN_PROPERTY_RENDER_BUFFERS failed, error:%s\n", strerror(errno));
             return error;
         }
-        const static int black_color = 0xff000000;
-        const static int bg_color[] = { SCREEN_BLIT_COLOR, black_color, SCREEN_BLIT_END };
+        const static int bg_color[] = { SCREEN_BLIT_COLOR, color, SCREEN_BLIT_END };
         screen_fill(screen_ctx, render_buf[0], bg_color);
         screen_post_window(win, render_buf[0], 0, nullptr, 0);
         sleep(10);      // wait to see the change of screen

@@ -1,1 +1,1 @@
-qcc -lang-c++ -Vgcc_ntoaarch64le -g -o qnx_screen_black_zone  test.cpp -I ./  -L./ -lscreen
+qcc -lang-c++ -Vgcc_ntoaarch64le -g -o qnx_screen_color_zone  test.cpp -I ./  -L./ -lscreen
